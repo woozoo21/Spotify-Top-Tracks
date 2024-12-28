@@ -42,7 +42,6 @@ For more information, visit [Spotify Developer Portal](https://developer.spotify
    ```
    python app.py
    ```
-## License
 
 ## License
 
