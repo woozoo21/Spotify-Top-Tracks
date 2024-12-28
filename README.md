@@ -14,6 +14,18 @@ This project allows users to check if they are contributing to the top tracks of
 - JavaScript
 - Flask (Python)
 
+## Spotify API Usage
+
+In this project, I used the [Spotify Web API](https://developer.spotify.com/) to retrieve the top tracks and recently played tracks for a given artist. 
+
+### How the Spotify API was integrated:
+1. **Authentication**: The project uses Spotify’s OAuth 2.0 system for user authentication, which grants access to the user’s data (e.g., recently played tracks).
+2. **Top Tracks**: Using the API's `artists/{id}/top-tracks` endpoint, I retrieved the top tracks of the specified artist.
+3. **Recently Played Tracks**: I used the `me/player/recently-played` endpoint to fetch the user’s most recent tracks.
+4. **Comparing Tracks**: The project compares the tracks the user has recently listened to with the artist's top tracks to check for common tracks and display relevant messages.
+
+For more information, visit [Spotify Developer Portal](https://developer.spotify.com/).
+
 ## Setup
 
 1. Clone the repository:
