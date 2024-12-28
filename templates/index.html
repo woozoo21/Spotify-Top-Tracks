@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Spotify Top Tracks</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #121212;
+            color: white;
+            font-family: 'Roboto', sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .highlight {
+            background-color: #1DB954;
+            padding: 5px;
+            border-radius: 5px;
+            color: black;
+        }
+        .track-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .track-item {
+            margin: 10px 0;
+        }
+        #yayMessage, #noMessage {
+            font-size: 30px;
+            font-weight: bold;
+            text-align: center;
+            margin-top: 30px;
+            display: none;
+        }
+        #yayMessage {
+            color: #1DB954;
+        }
+        #noMessage {
+            color: red;
+        }
+        #myChart {
+            width: 100%; 
+            height: 400px; 
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 id="title" class="text-center">Check if You're Contributing to Top Tracks!</h1>
+        <form id="checkForm">
+            <div class="mb-3">
+                <label for="artist_name" class="form-label">Enter Artist Name</label>
+                <input type="text" class="form-control" id="artist_name" placeholder="Artist Name">
+            </div>
+            <button type="submit" class="btn btn-success btn-lg w-100">Check Top Tracks</button>
+        </form>
+
+        <div id="result" class="mt-5"></div>
+        <div id="yayMessage"></div> <!-- YAY message -->
+        <div id="noMessage"></div> <!-- NOO message -->
+
+        <!-- Canvas for the chart -->
+        <canvas id="myChart"></canvas>
+        <div id="chartDescription" class="mt-4 text-center" style="color: white;">
+            <p>This graph shows how many times you have played common tracks with the artist's top tracks over the past weeks.</p>
+            <p>The x-axis represents the time period (weeks), and the y-axis shows the number of plays for each track.</p>
+        </div>
+    </div>
+
+    <!-- Include Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
+    <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        document.getElementById("checkForm").addEventListener("submit", function(e) {
+            e.preventDefault();
+            const artistName = document.getElementById("artist_name").value;
+
+            fetch("/check_tracks", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded"
+                },
+                body: new URLSearchParams({ artist_name: artistName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    document.getElementById("result").innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                    return;
+                }
+
+                let html = `<h3>Common Tracks:</h3><ul class="track-list">`;
+                let commonTracksFound = false; // To track if common tracks exist
+
+                data.common_tracks.forEach(track => {
+                    html += `<li class="track-item highlight">${track}</li>`;
+                    commonTracksFound = true; // If we find a common track
+                });
+                html += `</ul>`;
+                
+                // If common tracks found, show YAY message
+                if (commonTracksFound) {
+                    // Change the title on the page
+                    document.getElementById("title").innerText = `YAY! You are contributing to ${artistName}'s top tracks!!!`;
+                    document.getElementById("yayMessage").innerText = `YAY! You are contributing to ${artistName}'s top tracks!!!`;
+                    document.getElementById("yayMessage").style.display = "block";
+
+                    // Trigger confetti after the message is shown
+                    setTimeout(() => {
+                        confetti({
+                            spread: 60,
+                            particleCount: 200,
+                            origin: { y: 0.6 }
+                        });
+                    }, 500); // Delay to ensure the message is displayed first
+                } else {
+                    // If no common tracks found, show NOO message
+                    document.getElementById("title").innerText = `NOO! You are not contributing to ${artistName}'s top tracks :(`;
+                    document.getElementById("noMessage").innerText = `NOO! You are not contributing to ${artistName}'s top tracks :(`;
+                    document.getElementById("noMessage").style.display = "block";
+                }
+
+                // Display recently played and top tracks after the message
+                html += `<h3>Your Recently Played Tracks:</h3><ul class="track-list">`;
+                data.recent_tracks.forEach(track => {
+                    html += `<li class="track-item">${track}</li>`;
+                });
+                html += `</ul><h3>Top Tracks of ${artistName}:</h3><ul class="track-list">`;
+                data.top_tracks.forEach(track => {
+                    html += `<li class="track-item">${track}</li>`;
+                });
+                html += `</ul>`;
+                document.getElementById("result").innerHTML = html;
+
+                // Chart.js data
+                const chartData = {
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+                    datasets: [{
+                        label: 'Tracks Played',
+                        data: [10, 15, 25, 30], // Replace with real data
+                        borderColor: 'rgb(29, 185, 84)',
+                        backgroundColor: 'rgba(29, 185, 84, 0.2)',
+                        fill: true,
+                    }]
+                };
+
+                // Create the chart
+                const ctx = document.getElementById('myChart').getContext('2d');
+                const myChart = new Chart(ctx, {
+                    type: 'line',
+                    data: chartData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        return 'Plays: ' + tooltipItem.raw;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Weeks',
+                                    color: '#ffffff',
+                                }
+                            },
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Plays',
+                                    color: '#ffffff',
+                                }
+                            }
+                        }
+                    }
+                });
+            })
+            .catch(error => {
+                document.getElementById("result").innerHTML = `<div class="alert alert-danger">An error occurred: ${error}</div>`;
+            });
+        });
+    </script>
+</body>
+</html>

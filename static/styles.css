@@ -1,0 +1,31 @@
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #121212;
+    color: white;
+}
+
+h1 {
+    font-size: 36px;
+    color: #1DB954;
+}
+
+.container {
+    margin-top: 100px;
+}
+
+.highlight {
+    background-color: #1DB954;
+    padding: 5px;
+    border-radius: 5px;
+    color: black;
+}
+
+.track-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.track-item {
+    margin: 10px 0;
+    font-size: 18px;
+}
