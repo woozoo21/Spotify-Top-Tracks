@@ -44,10 +44,24 @@ For more information, visit [Spotify Developer Portal](https://developer.spotify
    ```
 ## License
 
+## License
 
-### Explanation:
+### Spotify API Usage License
 
-- **Spotify API Usage Section**: I've added a section explaining how you used Spotify's Developer API, including the endpoints used and the purpose of each.
-- **Spotify Authentication and Setup**: Instructions on setting up a Spotify Developer account and the credentials required for authentication have also been added.
-- **Client ID and Client Secret**: You should also mention that users need to get their credentials from the Spotify Developer Dashboard, which is necessary to make requests to the API.
+This project utilizes the **Spotify Web API** for fetching and displaying data related to artists' top tracks and users' recently played tracks. By using this project, you agree to comply with the **Spotify Developer Terms of Service** and the **Spotify Developer Agreement**.
+
+- **Spotify Developer Terms of Service**: [https://developer.spotify.com/terms/](https://developer.spotify.com/terms/)
+- **Spotify Developer Agreement**: [https://developer.spotify.com/legal/](https://developer.spotify.com/legal/)
+
+#### Spotify API Authentication
+This project requires the user to authenticate via Spotify's OAuth 2.0 authentication flow to access their data. The user must provide their own **Client ID** and **Client Secret** from the [Spotify Developer Dashboard](https://developer.spotify.com/dashboard/applications) in order to interact with the API.
+
+#### Restrictions
+- The use of the Spotify Web API is subject to Spotify’s [API Terms of Service](https://developer.spotify.com/terms/).
+- The API is provided on an "as-is" basis, and Spotify does not guarantee availability or reliability of the API.
+
+#### Attribution
+The Spotify Web API is a third-party service provided by Spotify AB. The data provided through the API is the property of Spotify. You should always give appropriate attribution to Spotify when displaying data from their API.
+
+By using this project, you acknowledge that you understand and agree to these terms.
 
